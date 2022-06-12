@@ -6,9 +6,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import GoogleSheet from '../API/GoogleSheet';
+import ReactToPrint from 'react-to-print';
 
-
-const GridTable = () => {
+const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '627px' }), []);
     const [columnDefs, setColumnDefs] = useState([
         { field: 'item', rowDrag: true, headerName: '品項' },
@@ -37,10 +37,18 @@ const GridTable = () => {
             <Row>
                 <Col>
                     <Button variant="primary" onClick={() => addItem()}>新增品項</Button>
-                    <Button variant="success" onClick={() => addItem()}>列印</Button>
+                    <ReactToPrint
+                        onBeforePrint={(e) => {
+                        }}
+                        trigger={() =>
+                            <Button variant="success">列印</Button>
+
+                        }
+                        content={() => props.componentRef.current}
+                    />
                 </Col>
             </Row>
-            
+
             <Row className="ag-theme-alpine" style={gridStyle}>
                 <AgGridReact
                     rowData={rowData}

@@ -1,4 +1,3 @@
-import ReactToPrint from 'react-to-print';
 import React from 'react';
 import GridTable from './GridTable';
 import Row from 'react-bootstrap/Row';
@@ -98,20 +97,14 @@ function Print(props) {
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}
                     />
-                    <ReactToPrint
-                        onBeforePrint={(e) => {
-                        }}
-                        trigger={() =>
-                            <button>儲存並列印</button>
 
-                        }
-                        content={() => componentRef.current}
-                    />
                 </Col>
             </Row>
             <Row>
                 <Col>
-                    <GridTable />
+                    <GridTable
+                        componentRef={componentRef}
+                    />
                 </Col>
             </Row>
         </>
