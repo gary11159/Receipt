@@ -1,6 +1,8 @@
-import React from 'react';
 import ReactToPrint from 'react-to-print';
-
+import React from 'react';
+import GridTable from './GridTable';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 class ComponentToPrint extends React.Component {
     render() {
         return (
@@ -19,7 +21,7 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={3}>統編:16981021  電話:(02)-22868488</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{textAlign: 'left'}}>日期</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>日期</td>
                             <td colSpan={1}>111/03/08</td>
                             <td colSpan={1}>12345678</td>
                         </tr>
@@ -28,28 +30,28 @@ class ComponentToPrint extends React.Component {
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
 
-                        <tr style={{borderBottom: '2px solid'}}>
-                            <td colSpan={1} style={{textAlign: 'left'}}>品名</td>
+                        <tr style={{ borderBottom: '2px solid' }}>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>品名</td>
                             <td colSpan={1}>未稅單價</td>
                             <td colSpan={1}>數量</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{textAlign: 'left'}}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
                             <td colSpan={1}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{textAlign: 'left'}}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
                             <td colSpan={1}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{textAlign: 'left'}}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
                             <td colSpan={1}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{textAlign: 'left'}}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
                             <td colSpan={1}>100</td>
                         </tr>
@@ -89,21 +91,29 @@ function Print(props) {
 
     const componentRef = React.useRef();
 
-
     return (
         <>
-            <ComponentToPrint 
-                ref={el => (componentRef.current = el)}
-            />
-            <ReactToPrint
-                onBeforePrint={(e) => {
-                }}
-                trigger={() =>
-                    <button>儲存並列印</button>
+            <Row style={{ display: 'none' }}>
+                <Col>
+                    <ComponentToPrint
+                        ref={el => (componentRef.current = el)}
+                    />
+                    <ReactToPrint
+                        onBeforePrint={(e) => {
+                        }}
+                        trigger={() =>
+                            <button>儲存並列印</button>
 
-                }
-                content={() => componentRef.current}
-            />
+                        }
+                        content={() => componentRef.current}
+                    />
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <GridTable />
+                </Col>
+            </Row>
         </>
     )
 }

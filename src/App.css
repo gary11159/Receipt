@@ -57,3 +57,16 @@ table{
   word-wrap: break-word;
   table-layout: fixed;
 }
+
+.ag-header-cell-text {
+  width: 100%;
+}
+
+.ag-root-wrapper {
+  border-radius: 30px;
+}
+
+.btn {
+  margin: 10px;
+  width: 100px;
+}
