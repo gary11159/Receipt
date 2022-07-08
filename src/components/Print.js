@@ -1,5 +1,8 @@
 import React from 'react';
 import GridTable from './GridTable';
+import Customer from './Customer';
+import Spinner from './Spinner';
+import History from './History';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 class ComponentToPrint extends React.Component {
@@ -89,9 +92,31 @@ class ComponentToPrint extends React.Component {
 function Print(props) {
 
     const componentRef = React.useRef();
+    const [loadingStatus, setLoadingStatus] = React.useState(false);
+    const [curTab, setCurTab] = React.useState("tab1");
 
     return (
         <>
+            {loadingStatus &&
+                <Spinner />
+            }
+
+            <div className="tabs" style={{ width: '70%' }}>
+                <div className="tab-2" style={curTab === 'tab1' ? { zIndex: 9 } : null}>
+                    <label htmlFor="tab2-1">當前列印</label>
+                    <input id="tab2-1" name="tabs-two" type="radio" defaultChecked onClick={() => setCurTab("tab1")} />
+                    <div>
+                        <Customer />
+                        <GridTable componentRef={componentRef} />
+                    </div>
+                </div>
+                <div className="tab-2" style={curTab === 'tab2' ? { zIndex: 9 } : null}>
+                    <label htmlFor="tab2-2">歷史資料</label>
+                    <input id="tab2-2" name="tabs-two" type="radio" onClick={() => setCurTab("tab2")} />
+
+                    <History />
+                </div>
+            </div>
             <Row style={{ display: 'none' }}>
                 <Col>
                     <ComponentToPrint
@@ -100,13 +125,7 @@ function Print(props) {
 
                 </Col>
             </Row>
-            <Row>
-                <Col>
-                    <GridTable
-                        componentRef={componentRef}
-                    />
-                </Col>
-            </Row>
+
         </>
     )
 }
