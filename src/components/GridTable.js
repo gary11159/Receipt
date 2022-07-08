@@ -58,6 +58,9 @@ const GridTable = (props) => {
     function removeSelected() {
         let selectedNodes = gridRef.current.api.getSelectedRows();
         gridRef.current.api.applyTransaction({ remove: selectedNodes });
+        let rowData = [];
+        gridRef.current.api.forEachNode(node => rowData.push(node.data));
+        setRowData(rowData);
     }
 
     return (
@@ -68,6 +71,21 @@ const GridTable = (props) => {
                     <input type="text" id="date" name="date" style={{ borderRadius: 10, width: '10%', marginRight: 10 }}></input>
                     發票號碼：
                     <input type="text" id="number" name="number" style={{ borderRadius: 10, width: '12%' }}></input>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Button variant="primary" onClick={() => addItem()}>新增品項</Button>
+                    <Button variant="danger" onClick={() => removeSelected()}>移除所選品項</Button>
+                    <ReactToPrint
+                        onBeforePrint={(e) => {
+                        }}
+                        trigger={() =>
+                            <Button variant="success">列印</Button>
+
+                        }
+                        content={() => props.componentRef.current}
+                    />
                 </Col>
             </Row>
             <Row className="ag-theme-alpine" style={gridStyle}>
@@ -85,22 +103,6 @@ const GridTable = (props) => {
                 <Col>
                     備註：
                     <input type="text" id="memo" name="memo" style={{ borderRadius: 10, width: '20%' }}></input>
-                </Col>
-            </Row>
-
-            <Row>
-                <Col>
-                    <Button variant="primary" onClick={() => addItem()}>新增品項</Button>
-                    <Button variant="error" onClick={() => removeSelected()}>移除所選品項</Button>
-                    <ReactToPrint
-                        onBeforePrint={(e) => {
-                        }}
-                        trigger={() =>
-                            <Button variant="success">列印</Button>
-
-                        }
-                        content={() => props.componentRef.current}
-                    />
                 </Col>
             </Row>
             {/* <Row>
