@@ -1,6 +1,6 @@
 import useGoogleSheets from 'use-google-sheets';
 
-const GoogleSheet = () => {
+const GoogleSheet = (props) => {
   const { data, loading, error } = useGoogleSheets({
     apiKey: process.env.REACT_APP_API_KEY,
     sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID,
@@ -14,7 +14,8 @@ const GoogleSheet = () => {
     return <div>Error!</div>;
   }
 
-  return <div>{JSON.stringify(data)}</div>;
+  props.setItemInfo(JSON.stringify(data));
+  return ;
 };
 
 export default GoogleSheet;

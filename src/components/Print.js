@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import GridTable from './GridTable';
 import Customer from './Customer';
 import Spinner from './Spinner';
 import History from './History';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { ToastContainer, toast } from 'react-toastify';
+
 class ComponentToPrint extends React.Component {
     render() {
         return (
@@ -101,13 +103,13 @@ function Print(props) {
                 <Spinner />
             }
 
-            <div className="tabs" style={{ width: '70%' }}>
+            <div className="tabs" style={{ width: '70%', paddingTop: 20 }}>
                 <div className="tab-2" style={curTab === 'tab1' ? { zIndex: 9 } : null}>
                     <label htmlFor="tab2-1">當前列印</label>
                     <input id="tab2-1" name="tabs-two" type="radio" defaultChecked onClick={() => setCurTab("tab1")} />
-                    <div>
+                    <div style={{paddingTop: 0}}>
                         <Customer />
-                        <GridTable componentRef={componentRef} />
+                        <GridTable componentRef={componentRef} setLoadingStatus={(status) => setLoadingStatus(status)} />
                     </div>
                 </div>
                 <div className="tab-2" style={curTab === 'tab2' ? { zIndex: 9 } : null}>
@@ -125,7 +127,7 @@ function Print(props) {
 
                 </Col>
             </Row>
-
+            <ToastContainer autoClose={2000}/>
         </>
     )
 }
