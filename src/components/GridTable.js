@@ -16,6 +16,11 @@ const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '860px', marginLeft: '20%' }), []);
     const [itemInfo, setItemInfo] = useState();
 
+    let nowYear = new Date().getFullYear() - 1911;
+    let nowMonth = new Date().getMonth() + 1;
+    let nowDate = new Date().getDate();
+    const [nowDateTime, setNowDateTime] = React.useState(nowYear + '/' + nowMonth + '/' + nowDate);
+
     // 讀取品項
     const { data, loading, error } = useGoogleSheets({
         apiKey: process.env.REACT_APP_API_KEY,
@@ -81,6 +86,7 @@ const GridTable = (props) => {
         gridRef.current.api.setColumnDefs(columnDefs);
     }
 
+    // 欄位設置
     function getColumnDefs() {
         return [
             {
@@ -159,9 +165,9 @@ const GridTable = (props) => {
         // 金額
         let withoutTax = 0;
         gridRef.current.api.forEachNode((node) => {
-            withoutTax = withoutTax + parseInt(node.data.price, 10) * parseInt(node.data.amount, 10) ;
-            priceTax = priceTax + (parseInt(node.data.priceTax, 10) - parseInt(node.data.price, 10)) * parseInt(node.data.amount, 10) ;
-            totalPrice = totalPrice + ( parseInt(node.data.priceTax, 10) * parseInt(node.data.amount, 10));
+            withoutTax = withoutTax + parseInt(node.data.price, 10) * parseInt(node.data.amount, 10);
+            priceTax = priceTax + (parseInt(node.data.priceTax, 10) - parseInt(node.data.price, 10)) * parseInt(node.data.amount, 10);
+            totalPrice = totalPrice + (parseInt(node.data.priceTax, 10) * parseInt(node.data.amount, 10));
         });
 
         document.getElementById("finalPrice").textContent = withoutTax;
@@ -169,12 +175,21 @@ const GridTable = (props) => {
         document.getElementById("finalTotalPrice").textContent = totalPrice;
     }
 
+    // 現在時間
+    function getNowDate() {
+        let final = nowYear + '.' +
+            (nowMonth < 10 ? '0' + nowMonth : nowMonth)
+            + '.' + nowDate;
+        return final;
+    }
+
     return (
         <>
             <Row>
                 <Col>
                     日期：
-                    <input type="text" id="date" name="date" style={{ borderRadius: 10, width: '10%', marginRight: 10 }}></input>
+                    <input type="text" id="date" name="date" style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25 }}
+                        defaultValue={getNowDate()}></input>
                     發票號碼：
                     <input type="text" id="number" name="number" style={{ borderRadius: 10, width: '12%' }}></input>
                 </Col>
