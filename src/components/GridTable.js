@@ -7,9 +7,8 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import ReactToPrint from 'react-to-print';
 import useGoogleSheets from 'use-google-sheets';
-import { Store } from 'react-notifications-component';
-import { ReactNotifications } from 'react-notifications-component'
 import { toast } from 'react-toastify';
+import { onValue, ref, set, update } from 'firebase/database';
 
 const GridTable = (props) => {
     const gridRef = useRef(null);
@@ -112,9 +111,9 @@ const GridTable = (props) => {
     }, []);
 
     const [rowData, setRowData] = useState([
-        { item: '貼紙', price: 38.1, priceTax: 40, amount: 100 },
-        { item: '名片', price: 57.11, priceTax: 60, amount: 100 },
-        { item: '條碼', price: 476.19, priceTax: 500, amount: 50 },
+        // { item: '貼紙', price: 38.1, priceTax: 40, amount: 100 },
+        // { item: '名片', price: 57.11, priceTax: 60, amount: 100 },
+        // { item: '條碼', price: 476.19, priceTax: 500, amount: 50 },
     ]);
 
     //新增空白Row
@@ -183,6 +182,19 @@ const GridTable = (props) => {
         return final;
     }
 
+    // 儲存資料
+    function saveData() {
+        console.log(rowData);
+        if (rowData != undefined && rowData != null && rowData != '') {
+            let rowDataNew = [];
+            gridRef.current.api.forEachNode(node => rowDataNew.push(node.data));
+            console.log(rowDataNew);
+            // setRowData();
+        } else {
+            toast.error('請先新增品項！');
+        }
+    }
+
     return (
         <>
             <Row>
@@ -215,8 +227,10 @@ const GridTable = (props) => {
             </Row>
             <Row>
                 <Col>
-                    備註：
-                    <input type="text" id="memo" name="memo" style={{ borderRadius: 10, width: '20%' }}></input>
+                    備註1：
+                    <input type="text" id="memo" name="memo" style={{ borderRadius: 10, width: '20%', marginRight: 10 }}></input>
+                    備註2：
+                    <input type="text" id="memo2" name="memo" style={{ borderRadius: 10, width: '20%' }}></input>
                 </Col>
             </Row>
             <Row style={{ paddingBottom: 0 }}>
@@ -237,7 +251,7 @@ const GridTable = (props) => {
                         onBeforePrint={(e) => {
                         }}
                         trigger={() =>
-                            <Button variant="success">列印發票</Button>
+                            <Button variant="success" onClick={() => saveData()}>列印發票</Button>
 
                         }
                         content={() => props.componentRef.current}
