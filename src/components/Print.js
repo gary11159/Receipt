@@ -12,10 +12,10 @@ import { onValue, ref, set, update } from 'firebase/database';
 class ComponentToPrint extends React.Component {
     render() {
         return (
-            <div style={{ fontSize: '20px', marginTop: 100 }} className="printFont">
+            <div style={{ fontSize: '20px', marginTop: 50 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                 </div>
-                <table className='print' border="0" cellspacing="0" cellpadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>
+                <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>
                     <tbody>
                         <tr>
                             <td colSpan={3} >金牛科技有限公司</td>
@@ -37,32 +37,36 @@ class ComponentToPrint extends React.Component {
                         <tr><td>&nbsp;</td></tr>
 
                         <tr style={{ borderBottom: '2px solid' }}>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>品名</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>品名</td>
                             <td colSpan={1}>未稅單價</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>數量</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>數量</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>100</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>100</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>100</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>貼紙</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
                             <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>100</td>
+                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
                         </tr>
 
 
+                        <tr><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td></tr>
+                        <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
                         <tr><td>&nbsp;</td></tr>
@@ -98,6 +102,7 @@ function Print(props) {
     const [curTab, setCurTab] = React.useState("tab1");
     const [database, setDatabase] = React.useState();
 
+    const [customerData, setCustomerData] = React.useState();
 
     useEffect(() => {
         // 讀取資料庫
@@ -107,17 +112,12 @@ function Print(props) {
         onValue(ref(db), snapshot => {
             setLoadingStatus(false);
             toast.success("讀取資料成功！");
-            console.log(snapshot.val());
         });
 
         
 
     }, []);
 
-    // 讀取資料
-    function loadDataFromDatabase() {
-
-    }
 
     return (
         <>

@@ -7,14 +7,18 @@ function Customer(props) {
     
     // 查看有無客戶資料
     function onBlurID(e) {
-        props.setLoadingStatus(true);
         let account = e.target.value;
+        if( account == '' ) {
+            return;
+        }
         let db = props.db;
+        props.setLoadingStatus(true);
         let startRef = ref(db, 'ACCOUNT/' + account);
         onValue(startRef, (snapshot) => {
             let accountInfo = snapshot.val();
+            console.log(accountInfo);
             if( accountInfo != null && accountInfo != undefined && accountInfo != '' ) {
-                document.getElementById('customerName').value = accountInfo.accountName;
+                document.getElementById('customerName').value = accountInfo.customerName;
                 document.getElementById('number').value = accountInfo.number;
             } else {
                 document.getElementById('customerName').value = '';

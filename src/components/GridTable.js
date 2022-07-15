@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import ReactToPrint from 'react-to-print';
 import useGoogleSheets from 'use-google-sheets';
 import { toast } from 'react-toastify';
-import { onValue, ref, set, update } from 'firebase/database';
+import { off, onValue, ref, set, update } from 'firebase/database';
 
 const GridTable = (props) => {
     const gridRef = useRef(null);
@@ -18,7 +18,9 @@ const GridTable = (props) => {
     let nowYear = new Date().getFullYear() - 1911;
     let nowMonth = new Date().getMonth() + 1;
     let nowDate = new Date().getDate();
-    const [nowDateTime, setNowDateTime] = React.useState(nowYear + '/' + nowMonth + '/' + nowDate);
+    const [nowDateTime, setNowDateTime] = React.useState(nowYear + '-' + nowMonth);
+    // 當前發票
+    const [numberReceipt, setNumberReceipt] = React.useState();
 
     // 讀取品項
     const { data, loading, error } = useGoogleSheets({
@@ -26,7 +28,7 @@ const GridTable = (props) => {
         sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID,
     });
 
-    // 品項放入state
+    // 品項放入state (Google Sheet)
     useEffect(() => {
         if (loading) {
             props.setLoadingStatus(true);
@@ -48,8 +50,6 @@ const GridTable = (props) => {
 
     }, [itemInfo]);
 
-
-
     // 監聽按鍵
     useEffect(() => {
         const handleClick = event => {
@@ -69,6 +69,21 @@ const GridTable = (props) => {
             document.removeEventListener('keydown', handleClick);
         };
     }, []);
+
+    // 發票放入state
+    useEffect(() => {
+        if ((numberReceipt === undefined || numberReceipt === null || numberReceipt === '') &&
+            (props.db != null && props.db != undefined && props.db != '')) {
+            let db = props.db;
+            props.setLoadingStatus(true);
+            let startRef = ref(db, 'NowReceipt');
+            onValue(startRef, (snapshot) => {
+                let receipt = snapshot.val();
+                setNumberReceipt(receipt);
+                props.setLoadingStatus(false);
+            });
+        }
+    }, [props.db]);
 
     // update品項至table
     function settingColumnDefs() {
@@ -178,21 +193,140 @@ const GridTable = (props) => {
     function getNowDate() {
         let final = nowYear + '.' +
             (nowMonth < 10 ? '0' + nowMonth : nowMonth)
-            + '.' + nowDate;
+            + '.' + nowDate + ' ' + new Date().getHours() + ':' + new Date().getMinutes() + ':' + new Date().getSeconds();
         return final;
     }
 
+    // 儲存前檢查資料
+    function checkSaveData(customerID, customerName, number) {
+        if (rowData != undefined && rowData != null && rowData != '' &&
+            customerID != undefined && customerID != null && customerID != '' &&
+            number != undefined && number != null && number != '') {
+            return true;
+        }
+
+        return false;
+    }
+
     // 儲存資料
-    function saveData() {
-        console.log(rowData);
-        if (rowData != undefined && rowData != null && rowData != '') {
+    function saveData(e) {
+        let customerID = document.getElementById('customer').value;
+        let customerName = document.getElementById('customerName').value;
+        let number = document.getElementById('number').value;
+
+        let finalPrice = document.getElementById("finalPrice").textContent;
+        let finalTax = document.getElementById("finalTax").textContent;
+        let finalTotalPrice = document.getElementById("finalTotalPrice").textContent;
+
+        let memo1 = document.getElementById("memo1").value;
+        let memo2 = document.getElementById("memo2").value;
+        // true代表檢驗成功
+        if (checkSaveData(customerID, customerName, number)) {
             let rowDataNew = [];
             gridRef.current.api.forEachNode(node => rowDataNew.push(node.data));
-            console.log(rowDataNew);
-            // setRowData();
+            // 塞入資料庫內容
+            let receiptPostData = {
+                [new Date().getFullYear() + '' + (parseInt(new Date().getMonth()) + 1)]: {
+                    [numberReceipt]: {
+                        customerID: customerID,
+                        customerName: customerName,
+                        number: number,
+                        dateTime: getNowDate(),
+                        detailDatas: rowDataNew,
+                        finalPrice: finalPrice,
+                        finalTax: finalTax,
+                        finalTotalPrice: finalTotalPrice,
+                        memo1: memo1,
+                        memo2: memo2
+                    }
+                }
+            };
+
+            let accountPostData = {
+                [customerID]: {
+                    customerName: customerName,
+                    number: number
+                }
+            }
+
+            // 更新發票
+            update(ref(props.db, 'Receipt/'), receiptPostData).then(() => {
+                console.log("更新發票明細成功");
+            }).catch(() => {
+                toast.error('新增發票明細發生錯誤，請盡速通知管理員！');
+            });
+
+            // 更新客戶
+            update(ref(props.db, 'ACCOUNT/'), accountPostData).then(() => {
+                console.log("更新客戶資料明細成功");
+            }).catch(() => {
+                toast.error('新增客戶資料發生錯誤，請盡速通知管理員！');
+            });
+
+            // 新增純發票號碼
+            update(ref(props.db, 'ReceiptNumber/'), { numberReceipt: '' }).then(() => {
+                console.log("新增純發票號碼成功");
+            }).catch(() => {
+                toast.error('新增純發票號碼發生錯誤，請盡速通知管理員！');
+            });
+
+            // 更新當前發票
+            let newNumberReceipt = getNewNumberReceipt();
+            update(ref(props.db, '/'), { 'NowReceipt': newNumberReceipt }).then(() => {
+                setNumberReceipt(newNumberReceipt);
+                console.log("更新當前發票細成功");
+            }).catch(() => {
+                toast.error('更新當前發票發生錯誤，請盡速通知管理員！');
+            });
+
         } else {
-            toast.error('請先新增品項！');
+            toast.error('送出資料有誤請檢視！');
+            e.preventDefault();
+        };
+    }
+
+    // 獲取新的發票號碼
+    function getNewNumberReceipt() {
+        let nowReceipt = numberReceipt;
+
+        while (checkReceiptNumber(nowReceipt)) {
+            let english = numberReceipt.substring(0, 2);
+            let num = '' + (parseInt(nowReceipt.substring(2, nowReceipt.length)) + 1);
+            let numLength = num.length;
+
+            for (let i = 0; i < 8 - numLength; i++) {
+                num = '0' + num;
+            }
+
+            nowReceipt = english + num;
         }
+        return nowReceipt;
+    }
+
+
+    // 檢查發票號碼有無重複(true代表有重複)
+    function checkReceiptNumber(r) {
+        let startRef = ref(props.db, 'ReceiptNumber/');
+        let check = false;
+        onValue(startRef, (snapshot) => {
+            let runValue = snapshot.val()
+            if (runValue != null && runValue != undefined && runValue != '') {
+                Object.keys(runValue).forEach(function (key) {
+                    if (key === r) {
+                        console.log(r);
+                        check = true;
+                    }
+                });
+
+            }
+        });
+
+        return check;
+    }
+
+    // 檢查使用者輸入的發票有無重複
+    function changeReceiptNumber(e) {
+        let numberRec = e.target.value;
     }
 
     return (
@@ -201,9 +335,9 @@ const GridTable = (props) => {
                 <Col>
                     日期：
                     <input type="text" id="date" name="date" style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25 }}
-                        defaultValue={getNowDate()}></input>
+                        defaultValue={getNowDate().substring(0, 9)}></input>
                     發票號碼：
-                    <input type="text" id="number" name="number" style={{ borderRadius: 10, width: '12%' }}></input>
+                    <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%' }} defaultValue={numberReceipt}></input>
                 </Col>
             </Row>
             {/* <Row> */}
@@ -228,7 +362,7 @@ const GridTable = (props) => {
             <Row>
                 <Col>
                     備註1：
-                    <input type="text" id="memo" name="memo" style={{ borderRadius: 10, width: '20%', marginRight: 10 }}></input>
+                    <input type="text" id="memo1" name="memo1" style={{ borderRadius: 10, width: '20%', marginRight: 10 }}></input>
                     備註2：
                     <input type="text" id="memo2" name="memo" style={{ borderRadius: 10, width: '20%' }}></input>
                 </Col>
@@ -248,10 +382,9 @@ const GridTable = (props) => {
             <Row>
                 <Col>
                     <ReactToPrint
-                        onBeforePrint={(e) => {
-                        }}
+                        onBeforePrint={(e) => saveData(e)}
                         trigger={() =>
-                            <Button variant="success" onClick={() => saveData()}>列印發票</Button>
+                            <Button variant="success">列印發票</Button>
 
                         }
                         content={() => props.componentRef.current}
