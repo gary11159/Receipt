@@ -16,7 +16,6 @@ function Customer(props) {
         let startRef = ref(db, 'ACCOUNT/' + account);
         onValue(startRef, (snapshot) => {
             let accountInfo = snapshot.val();
-            console.log(accountInfo);
             if( accountInfo != null && accountInfo != undefined && accountInfo != '' ) {
                 document.getElementById('customerName').value = accountInfo.customerName;
                 document.getElementById('number').value = accountInfo.number;
@@ -25,7 +24,10 @@ function Customer(props) {
                 document.getElementById('number').value = '';
             }
             props.setLoadingStatus(false);
+            props.onchangePrintData();
         });
+
+        
     }
 
     return (
@@ -33,15 +35,15 @@ function Customer(props) {
             <div className="row center">
                 客戶編號：
                 <div className="col-15">
-                    <input type="text" id="customer" name="customer" style={{ borderRadius: 10, width: '80%' }}  onBlur={(e) => onBlurID(e)}></input>
+                    <input type="text" id="customer" name="customer" style={{ borderRadius: 10, width: '80%' }}  onBlur={(e) => onBlurID(e)} onChange={() => props.onchangePrintData()}></input>
                 </div>
                 客戶名稱：
                 <div className="col-15" style={{ textAlign: "left" }}>
-                    <input type="text" id="customerName" name="customerName" style={{ borderRadius: 10, width: '100%' }}></input>
+                    <input type="text" id="customerName" name="customerName" style={{ borderRadius: 10, width: '100%' }} onChange={() => props.onchangePrintData()}></input>
                 </div>
                 統一編號：
                 <div className="col-15" style={{ textAlign: "left" }}>
-                    <input type="text" id="number" name="number" style={{ borderRadius: 10, width: '80%' }}></input>
+                    <input type="text" id="number" name="number" style={{ borderRadius: 10, width: '80%' }} onChange={() => props.onchangePrintData()}></input>
                 </div>
             </div>
         </>

@@ -10,7 +10,32 @@ import { db } from './firebase';
 import { onValue, ref, set, update } from 'firebase/database';
 
 class ComponentToPrint extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
     render() {
+        let data = [];
+
+        if (this.props.rowData !== null && this.props.rowData !== undefined && this.props.rowData !== '') {
+            let dataCount = this.props.rowData.rowData.length;
+            this.props.rowData.rowData.map((dataMap, index) => {
+                data.push(
+                    <tr key={index}>
+                        <td colSpan={1} style={{ textAlign: 'center' }}>{dataMap.item}</td>
+                        <td colSpan={1}>{dataMap.price}</td>
+                        <td colSpan={1} style={{ textAlign: 'center' }}>{dataMap.amount}</td>
+                    </tr>
+                );
+            });
+
+            // 補填空格
+            for (let i = 0; i < 14 - dataCount; i++) {
+                data.push(
+                    <tr key={i+100}><td>&nbsp;</td></tr>
+                );
+            }
+        }
         return (
             <div style={{ fontSize: '20px', marginTop: 50 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
@@ -18,18 +43,18 @@ class ComponentToPrint extends React.Component {
                 <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>
                     <tbody>
                         <tr>
-                            <td colSpan={3} >金牛科技有限公司</td>
+                            <td colSpan={3} >{this.props.customerData != null ? this.props.customerData.customerName : ''}</td>
                         </tr>
                         <tr>
                             <td colSpan={3}>新北市三重區溪尾街108巷34號</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}>統編:16981021  電話:(02)-22868488</td>
+                            <td colSpan={3}>統編:{this.props.customerData != null ? this.props.customerData.number : ''}  電話:(02)-22868488</td>
                         </tr>
                         <tr>
                             <td colSpan={1} style={{ textAlign: 'right' }}>日期</td>
-                            <td colSpan={1}>111/03/08</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>12345678</td>
+                            <td colSpan={1}>{this.props.rowData != null ? this.props.rowData.date : ''}</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.customer : ''}</td>
                         </tr>
 
                         {/* 兩個br */}
@@ -41,51 +66,27 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={1}>未稅單價</td>
                             <td colSpan={1} style={{ textAlign: 'center' }}>數量</td>
                         </tr>
-                        <tr>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
-                            <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
-                        </tr>
-                        <tr>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
-                            <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
-                        </tr>
-                        <tr>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
-                            <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
-                        </tr>
-                        <tr>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>貼紙</td>
-                            <td colSpan={1}>38.1</td>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>100</td>
-                        </tr>
 
-
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
-                        <tr><td>&nbsp;</td></tr>
+                        {data}
                         <tr>
                             <td></td>
-                            <td colSpan={1}>34933.33</td>
+                            <td colSpan={1}>{this.props.money == null ? '' :
+                                this.props.money.finalPrice
+                            }</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colSpan={1}>1746.67</td>
+                            <td colSpan={1}>{this.props.money == null ? '' :
+                                this.props.money.finalTax
+                            }</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colSpan={1}>36680.00</td>
+                            <td colSpan={1}>{this.props.money == null ? '' :
+                                this.props.money.finalTotalPrice
+                            }</td>
                             <td></td>
                         </tr>
                     </tbody>
@@ -102,7 +103,14 @@ function Print(props) {
     const [curTab, setCurTab] = React.useState("tab1");
     const [database, setDatabase] = React.useState();
 
+    // 客戶資料
     const [customerData, setCustomerData] = React.useState();
+    // 品項等資料
+    const [rowData, setRowData] = React.useState();
+    // 金額
+    const [money, setMoney] = React.useState();
+
+    const gridRef = useRef(null);
 
     useEffect(() => {
         // 讀取資料庫
@@ -111,13 +119,36 @@ function Print(props) {
 
         onValue(ref(db), snapshot => {
             setLoadingStatus(false);
-            toast.success("讀取資料成功！");
         });
 
-        
+
 
     }, []);
 
+    // 列印資料欄位有異動
+    function onchangePrintData(type, data) {
+        // 客戶資料
+        if (type === 'custom') {
+            setCustomerData(() => ({
+                customer: document.getElementById('customer').value,
+                customerName: document.getElementById('customerName').value,
+                number: document.getElementById('number').value
+            }));
+        }
+
+        // 日期 品項等
+        else if (type === 'rowData') {
+            setRowData(() => ({
+                rowData: data,
+                date: document.getElementById('date').value
+            }));
+        }
+
+        //算金額
+        else if (type === 'money') {
+            setMoney(pre => data);
+        }
+    }
 
     return (
         <>
@@ -130,13 +161,16 @@ function Print(props) {
                     <label htmlFor="tab2-1">當前列印</label>
                     <input id="tab2-1" name="tabs-two" type="radio" defaultChecked onClick={() => setCurTab("tab1")} />
                     <div style={{ paddingTop: 0 }}>
-                        <Customer 
+                        <Customer
                             db={db}
                             setLoadingStatus={(status) => setLoadingStatus(status)}
+                            onchangePrintData={() => onchangePrintData('custom', '')}
                         />
                         <GridTable
+                            gridRef={gridRef}
                             componentRef={componentRef}
                             setLoadingStatus={(status) => setLoadingStatus(status)}
+                            onchangePrintData={(type, data) => onchangePrintData(type, data)}
                             db={db}
                         />
                     </div>
@@ -148,10 +182,13 @@ function Print(props) {
                     <History />
                 </div>
             </div>
-            <Row style={{ display: 'none' }}>
+            <Row style={{display: 'none'}}>
                 <Col>
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}
+                        customerData={customerData}
+                        rowData={rowData}
+                        money={money}
                     />
 
                 </Col>
