@@ -32,7 +32,7 @@ class ComponentToPrint extends React.Component {
             // 補填空格
             for (let i = 0; i < 14 - dataCount; i++) {
                 data.push(
-                    <tr key={i+100}><td>&nbsp;</td></tr>
+                    <tr key={i + 100}><td>&nbsp;</td></tr>
                 );
             }
         }
@@ -43,18 +43,18 @@ class ComponentToPrint extends React.Component {
                 <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>
                     <tbody>
                         <tr>
-                            <td colSpan={3} >{this.props.customerData != null ? this.props.customerData.customerName : ''}</td>
+                            <td colSpan={3} >金牛科技有限公司</td>
                         </tr>
                         <tr>
                             <td colSpan={3}>新北市三重區溪尾街108巷34號</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}>統編:{this.props.customerData != null ? this.props.customerData.number : ''}  電話:(02)-22868488</td>
+                            <td colSpan={3}>統編:16981021 電話:(02)-22868488</td>
                         </tr>
                         <tr>
                             <td colSpan={1} style={{ textAlign: 'right' }}>日期</td>
                             <td colSpan={1}>{this.props.rowData != null ? this.props.rowData.date : ''}</td>
-                            <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.customer : ''}</td>
+                            <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.number : ''}</td>
                         </tr>
 
                         {/* 兩個br */}
@@ -110,7 +110,11 @@ function Print(props) {
     // 金額
     const [money, setMoney] = React.useState();
 
+    // 當前列印table
     const gridRef = useRef(null);
+
+    // History Table
+    const gridRef2 = useRef(null);
 
     useEffect(() => {
         // 讀取資料庫
@@ -179,10 +183,15 @@ function Print(props) {
                     <label htmlFor="tab2-2">歷史資料</label>
                     <input id="tab2-2" name="tabs-two" type="radio" onClick={() => setCurTab("tab2")} />
 
-                    <History />
+                    <History
+                        gridRef={gridRef2}
+                        style={{ fontSize: 10 }}
+                        setLoadingStatus={(status) => setLoadingStatus(status)}
+                        db={db}
+                    />
                 </div>
             </div>
-            <Row style={{display: 'none'}}>
+            <Row style={{ display: 'none' }}>
                 <Col>
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}

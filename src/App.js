@@ -3,6 +3,7 @@ import Print from './components/Print';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/tab.css';
 import 'react-toastify/dist/ReactToastify.css';
+import "react-datepicker/dist/react-datepicker.css";
 
 function App() {
 

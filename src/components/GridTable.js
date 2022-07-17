@@ -9,6 +9,7 @@ import ReactToPrint from 'react-to-print';
 import useGoogleSheets from 'use-google-sheets';
 import { toast } from 'react-toastify';
 import { off, onValue, ref, set, update } from 'firebase/database';
+import { setDefaultLocale } from 'react-datepicker';
 
 const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '860px', marginLeft: '20%' }), []);
@@ -128,8 +129,8 @@ const GridTable = (props) => {
     //新增空白Row
     function addItem() {
         let rowCount = props.gridRef.current.api.getDisplayedRowCount();
-        
-        if( rowCount >= 6 ) {
+
+        if (rowCount >= 6) {
             toast.error('品項最多6個!');
             return;
         }
@@ -281,36 +282,42 @@ const GridTable = (props) => {
             // 更新發票
             update(ref(props.db, 'Receipt/' + new Date().getFullYear() + '' + (parseInt(new Date().getMonth()) + 1) + '/'), receiptPostData).then(() => {
                 console.log("更新發票明細成功");
+                // 更新客戶
+                update(ref(props.db, 'ACCOUNT/'), accountPostData).then(() => {
+                    console.log("更新客戶資料明細成功");
+                    // 新增純發票號碼
+                    update(ref(props.db, 'ReceiptNumber/'), { [numberReceipt]: '' }).then(() => {
+                        console.log("新增純發票號碼成功");
+                        // 更新當前發票
+                        let newNumberReceipt = getNewNumberReceipt();
+                        update(ref(props.db, '/'), { 'NowReceipt': newNumberReceipt }).then(() => {
+                            setNumberReceipt(newNumberReceipt);
+                            console.log("更新當前發票細成功");
+                            setDefault();
+                        }).catch(() => {
+                            toast.error('更新當前發票發生錯誤，請盡速通知管理員！');
+                        });
+                    }).catch(() => {
+                        toast.error('新增純發票號碼發生錯誤，請盡速通知管理員！');
+                    });
+                }).catch(() => {
+                    toast.error('新增客戶資料發生錯誤，請盡速通知管理員！');
+                });
             }).catch(() => {
                 toast.error('新增發票明細發生錯誤，請盡速通知管理員！');
-            });
-
-            // 更新客戶
-            update(ref(props.db, 'ACCOUNT/'), accountPostData).then(() => {
-                console.log("更新客戶資料明細成功");
-            }).catch(() => {
-                toast.error('新增客戶資料發生錯誤，請盡速通知管理員！');
-            });
-
-            // 新增純發票號碼
-            update(ref(props.db, 'ReceiptNumber/'), { [numberReceipt]: '' }).then(() => {
-                console.log("新增純發票號碼成功");
-            }).catch(() => {
-                toast.error('新增純發票號碼發生錯誤，請盡速通知管理員！');
-            });
-
-            // 更新當前發票
-            let newNumberReceipt = getNewNumberReceipt();
-            update(ref(props.db, '/'), { 'NowReceipt': newNumberReceipt }).then(() => {
-                setNumberReceipt(newNumberReceipt);
-                console.log("更新當前發票細成功");
-            }).catch(() => {
-                toast.error('更新當前發票發生錯誤，請盡速通知管理員！');
             });
 
         } else {
             e.preventDefault();
         };
+    }
+
+    // 初始化
+    function setDefault() {
+        setRowData([]);
+        document.getElementById("finalPrice").textContent = 0;
+        document.getElementById("finalTax").textContent = 0;
+        document.getElementById("finalTotalPrice").textContent = 0;
     }
 
     // 獲取新的發票號碼
@@ -356,7 +363,7 @@ const GridTable = (props) => {
         let value = e.target.value;
         setNumberReceipt(value);
     }
-
+    
     return (
         <>
             <Row>
@@ -375,7 +382,7 @@ const GridTable = (props) => {
 
             {/* </Col> */}
             {/* </Row> */}
-            <Row className="ag-theme-alpine" style={gridStyle}>
+            <Row className="ag-theme-alpine container1" style={gridStyle}>
                 <AgGridReact
                     ref={props.gridRef}
                     rowData={rowData}
