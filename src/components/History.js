@@ -238,6 +238,7 @@ function History(props) {
                             onChange={(date) => dateChange(date)}
                         />-
                         <DatePicker
+                            id="endDate"
                             selected={endDate}
                             locale={locale}
                             dateFormat="yyyy-MM"
