@@ -226,3 +226,8 @@ div.ag-row {
 #endDate {
   margin-left: 10px;
 }
+
+.notAllow {
+  cursor: not-allowed;
+  background-color: gray;
+}
