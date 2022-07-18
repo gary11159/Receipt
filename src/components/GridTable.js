@@ -228,6 +228,43 @@ const GridTable = (props) => {
             toast.error('並未新增品項');
             return false;
         }
+
+        let boolean = true;
+        let i = 0, j = 0, k = 0;
+        rowData.forEach((data) => {
+            if (data.item == '') {
+                if( i === 0 ) {
+                    toast.error('請檢查是否有品項未選擇');
+                    i++;
+                }
+                
+                boolean = false;
+                return;
+            }
+            if (data.price == 0) {
+                if( j === 0 ) {
+                    toast.error('請檢查是否有未稅單價為零');
+                    j++;
+                }
+                
+                boolean = false;
+                return;
+            }
+            if (data.amount == 0) {
+                if( k === 0 ) {
+                    toast.error('請檢查是否有數量為零');
+                    k++;
+                }
+                
+                boolean = false;
+                return;
+            }
+        });
+
+        if( !boolean ) {
+            return false;
+        }
+        
         if (customerID === undefined || customerID === null || customerID === '') {
             toast.error('客戶編號尚未填寫');
             return false;
@@ -392,7 +429,7 @@ const GridTable = (props) => {
                     <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%', fontSize: 25 }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
                     <Button variant="primary" onClick={() => addItem()} style={{ marginLeft: 20 }}>新增品項</Button>
                     <Button variant="danger" onClick={() => removeSelected()} style={{ marginLeft: 20 }}>移除所選的品項</Button>
-                    <Button variant="warning" style={{ marginLeft: 20 }} onClick={() => setShowCustomerModal(true)}>檢視客編</Button>
+                    <Button variant="warning" style={{ marginLeft: 20 }} onClick={() => setShowCustomerModal(true)}>檢視歷史客編</Button>
                 </Col>
             </Row>
             {/* <Row> */}
