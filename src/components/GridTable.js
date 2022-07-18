@@ -374,7 +374,7 @@ const GridTable = (props) => {
                     <input type="text" id="date" name="date" readOnly style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25 }}
                         defaultValue={getNowDate().substring(0, 9)}></input>
                     發票號碼：
-                    <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%' }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
+                    <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%', fontSize: 25 }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
                 </Col>
             </Row>
             {/* <Row> */}
