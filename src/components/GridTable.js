@@ -10,11 +10,14 @@ import useGoogleSheets from 'use-google-sheets';
 import { toast } from 'react-toastify';
 import { off, onValue, ref, set, update } from 'firebase/database';
 import { setDefaultLocale } from 'react-datepicker';
+import Modal from 'react-bootstrap/Modal';
+import HistoryCustomer from './HistoryCustomer';
 
 const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '860px', marginLeft: '20%' }), []);
     const [itemInfo, setItemInfo] = useState();
-
+    // 顯示已儲存的客戶視窗
+    const [showCustomerModal, setShowCustomerModal] = useState(false);
     let nowYear = new Date().getFullYear() - 1911;
     let nowMonth = new Date().getMonth() + 1;
     let nowDate = new Date().getDate();
@@ -197,7 +200,7 @@ const GridTable = (props) => {
 
         document.getElementById("finalPrice").textContent = withoutTax.toFixed(2);
         document.getElementById("finalTax").textContent = priceTax.toFixed(2);
-        document.getElementById("finalTotalPrice").textContent = totalPrice;
+        document.getElementById("finalTotalPrice").textContent = totalPrice.toFixed(0);
 
         props.onchangePrintData('money', {
             finalPrice: document.getElementById("finalPrice").textContent,
@@ -372,6 +375,14 @@ const GridTable = (props) => {
 
     return (
         <>
+            <Modal show={showCustomerModal} onHide={() => setShowCustomerModal(false)} size="lg">
+                <HistoryCustomer
+                    setLoadingStatus={(status) => props.setLoadingStatus(status)}
+                    db={props.db}
+                    modalControl={(bool) => setShowCustomerModal(bool)}
+                />
+            </Modal>
+
             <Row>
                 <Col>
                     日期：
@@ -381,7 +392,7 @@ const GridTable = (props) => {
                     <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%', fontSize: 25 }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
                     <Button variant="primary" onClick={() => addItem()} style={{ marginLeft: 20 }}>新增品項</Button>
                     <Button variant="danger" onClick={() => removeSelected()} style={{ marginLeft: 20 }}>移除所選的品項</Button>
-                    {/* <Button variant="warning" style={{ marginLeft: 20 }}>檢視客編</Button> */}
+                    <Button variant="warning" style={{ marginLeft: 20 }} onClick={() => setShowCustomerModal(true)}>檢視客編</Button>
                 </Col>
             </Row>
             {/* <Row> */}
@@ -416,7 +427,7 @@ const GridTable = (props) => {
                 <Col>
                     金額：
                     <span id="finalPrice" style={{ color: 'yellow', paddingRight: 30 }}>0</span>
-                    稅金 :
+                    稅金：
                     <span id="finalTax" style={{ color: 'yellow', paddingRight: 30 }}>0</span>
                     總金額：
                     <span id="finalTotalPrice" style={{ color: 'yellow', paddingRight: 30, fontSize: 35 }}>

@@ -225,3 +225,34 @@ div.ag-row {
   cursor: not-allowed;
   background-color: gray;
 }
+
+.footer {
+  background-color: grey;
+  color: #000;
+  width: 100%;
+  min-height: 80px;
+}
+
+.allCenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-header {
+  border-bottom: none !important;
+}
+
+.modal-footer {
+  border-top: none !important;
+}
+
+.modal-size {
+  width: 50% !important;
+  max-width: none !important;
+}
+
+.modal-content {
+  background-color:transparent !important;
+  border: none !important;
+}
