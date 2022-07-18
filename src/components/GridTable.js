@@ -57,7 +57,7 @@ const GridTable = (props) => {
                 removeSelected();
             }
             // +按鍵
-            else if (event.keyCode === 107) {
+            else if (event.keyCode === 107 || event.keyCode === 45) {
                 addItem();
             }
         };
@@ -318,6 +318,8 @@ const GridTable = (props) => {
         document.getElementById("finalPrice").textContent = 0;
         document.getElementById("finalTax").textContent = 0;
         document.getElementById("finalTotalPrice").textContent = 0;
+        document.getElementById('memo1').value = '';
+        document.getElementById('memo2').value = '';
     }
 
     // 獲取新的發票號碼
@@ -363,7 +365,7 @@ const GridTable = (props) => {
         let value = e.target.value;
         setNumberReceipt(value);
     }
-    
+
     return (
         <>
             <Row>
@@ -384,6 +386,7 @@ const GridTable = (props) => {
             {/* </Row> */}
             <Row className="ag-theme-alpine container1" style={gridStyle}>
                 <AgGridReact
+                    stopEditingWhenCellsLoseFocus={true}
                     ref={props.gridRef}
                     rowData={rowData}
                     defaultColDef={defaultColDef}

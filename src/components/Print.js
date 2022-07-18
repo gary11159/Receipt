@@ -30,14 +30,14 @@ class ComponentToPrint extends React.Component {
             });
 
             // 補填空格
-            for (let i = 0; i < 14 - dataCount; i++) {
+            for (let i = 0; i < 9 - dataCount; i++) {
                 data.push(
                     <tr key={i + 100}><td>&nbsp;</td></tr>
                 );
             }
         }
         return (
-            <div style={{ fontSize: '20px', marginTop: 50 }} className="printFont">
+            <div style={{ fontSize: '20px', marginTop: 200 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                 </div>
                 <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>

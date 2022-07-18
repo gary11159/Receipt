@@ -14,7 +14,7 @@ export default (props) => {
                 <tr key={index}>
                     <td>{data.detailDatas[index].item}</td>
                     <td>{data.detailDatas[index].price}</td>
-                    <td>{data.detailDatas[index].priceTax}</td>
+                    <td>{data.detailDatas[index].amount}</td>
                 </tr>
             )
         });
@@ -31,7 +31,7 @@ export default (props) => {
                     <tr>
                         <th>品項</th>
                         <th>未稅單價</th>
-                        <th>稅金</th>
+                        <th>數量</th>
                     </tr>
                 </thead>
                 <tbody>
