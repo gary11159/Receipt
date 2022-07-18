@@ -46,7 +46,7 @@ export default (props) => {
                 稅金 :
                 <span id="finalTax" style={{ color: 'black', paddingRight: 30 }}>{data.finalTax}</span>
                 總金額：
-                <span id="finalTotalPrice" style={{ color: 'black', paddingRight: 30, fontSize: 35 }}>
+                <span id="finalTotalPrice" style={{ color: 'black', paddingRight: 30 }}>
                     {data.finalTotalPrice}
                 </span>
             </div>

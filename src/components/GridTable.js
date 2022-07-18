@@ -110,7 +110,10 @@ const GridTable = (props) => {
                 },
             },
             { field: 'price', headerName: '未稅單價' },
-            { field: 'priceTax', headerName: '含稅價格' },
+            {
+                field: 'priceTax', headerName: '含稅價格', editable: false,
+                valueGetter: 'data.price * 1.05',
+            },
             { field: 'amount', headerName: '數量' }
         ]
     }
@@ -121,6 +124,7 @@ const GridTable = (props) => {
             sortable: true,
             filter: true,
             editable: true,
+            resizable: true
         };
     }, []);
 
@@ -187,8 +191,8 @@ const GridTable = (props) => {
         let withoutTax = 0.0;
         props.gridRef.current.api.forEachNode((node) => {
             withoutTax = withoutTax + parseFloat(node.data.price) * parseInt(node.data.amount, 10);
-            priceTax = priceTax + (parseFloat(node.data.priceTax) - parseFloat(node.data.price)) * parseInt(node.data.amount, 10);
-            totalPrice = totalPrice + (parseFloat(node.data.priceTax) * parseInt(node.data.amount, 10));
+            priceTax = priceTax + (parseFloat(node.data.price) * 1.05 - parseFloat(node.data.price)) * parseInt(node.data.amount, 10);
+            totalPrice = totalPrice + (parseFloat(node.data.price) * 1.05 * parseInt(node.data.amount, 10));
         });
 
         document.getElementById("finalPrice").textContent = withoutTax.toFixed(2);
@@ -371,10 +375,13 @@ const GridTable = (props) => {
             <Row>
                 <Col>
                     日期：
-                    <input type="text" id="date" name="date" readOnly style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25 }}
+                    <input type="text" id="date" name="date" readOnly style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25, marginRight: 20 }}
                         defaultValue={getNowDate().substring(0, 9)}></input>
                     發票號碼：
                     <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%', fontSize: 25 }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
+                    <Button variant="primary" onClick={() => addItem()} style={{ marginLeft: 20 }}>新增品項</Button>
+                    <Button variant="danger" onClick={() => removeSelected()} style={{ marginLeft: 20 }}>移除所選的品項</Button>
+                    {/* <Button variant="warning" style={{ marginLeft: 20 }}>檢視客編</Button> */}
                 </Col>
             </Row>
             {/* <Row> */}

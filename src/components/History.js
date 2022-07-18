@@ -49,6 +49,8 @@ function History(props) {
             filter: true,
             editable: true,
             tooltipComponent: CustomTooltip,
+            enablePivot: true,
+            resizable: true
         };
     }, []);
 
@@ -61,21 +63,48 @@ function History(props) {
     // 使用者輸入月份總表
     const [finalDateTime, setFinalDateTime] = React.useState([]);
 
-    function againPostData(money, dataCount) {
+    // 第二個月資料
+    function againPostData(money, dataCount, rowDataFinal) {
         let dateTime = endDate.getFullYear() + '' + (endDate.getMonth() + 1);
         let startRef = ref(props.db, 'Receipt/' + dateTime);
         return onValue(startRef, (snapshot) => {
             let monthData = snapshot.val();
             if (monthData === undefined || monthData === null || monthData === '' || monthData.length === 0) {
-                setRowCount(0);
-                toast.error('查無資料');
-                props.setLoadingStatus(false);
+                if (rowDataFinal !== undefined && rowDataFinal !== null && rowDataFinal !== '' && rowDataFinal.length > 0) {
+                    console.log(rowDataFinal)
+                    setRowData(rowDataFinal);
+                    setMoney(money);
+                    props.setLoadingStatus(false);
+                    return;
+                } else {
+                    setRowCount(0);
+                    setMoney(0);
+                    toast.error('查無資料');
+                    props.setLoadingStatus(false);
+                }
+
                 return;
             } else {
                 setRowCount(pre => pre + Object.keys(monthData).length);
                 for (let data in monthData) {
-                    console.log(monthData[data].customerID, customer)
-                    if (monthData[data].customerID == customer) {
+                    if (customer === undefined || customer === null || customer === '') {
+                        dataCount++;
+                        money += parseInt(monthData[data].finalTotalPrice, 10);
+                        setRowData(oldArray => [...oldArray, {
+                            accountNum: monthData[data].customerID,
+                            receipt: data,
+                            accountName: monthData[data].customerName,
+                            number: monthData[data].number,
+                            date: monthData[data].dateTime.substring(0, 9),
+                            memo1: monthData[data].memo1,
+                            memo2: monthData[data].memo2,
+                            detailDatas: monthData[data].detailDatas,
+                            finalPrice: monthData[data].finalPrice,
+                            finalTax: monthData[data].finalTax,
+                            finalTotalPrice: monthData[data].finalTotalPrice
+                        }])
+                    }
+                    else if (monthData[data].customerID == customer) {
                         dataCount++;
                         money += parseInt(monthData[data].finalTotalPrice, 10);
                         setRowData(oldArray => [...oldArray, {
@@ -124,15 +153,16 @@ function History(props) {
                 let monthData = snapshot.val();
                 let money = 0;
                 let dataCount = 0;
+                let rowDataFinal = [];
                 if (monthData === undefined || monthData === null || monthData === '' || monthData.length === 0) {
                     againPostData(money, dataCount);
                 } else {
                     setRowCount(pre => pre + Object.keys(monthData).length);
                     for (let data in monthData) {
-                        if (monthData[data].customerID == customer) {
+                        if (customer === undefined || customer === null || customer === '') {
                             dataCount++;
                             money += parseInt(monthData[data].finalTotalPrice, 10);
-                            setRowData(oldArray => [...oldArray, {
+                            rowDataFinal.push({
                                 accountNum: monthData[data].customerID,
                                 receipt: data,
                                 accountName: monthData[data].customerName,
@@ -144,11 +174,28 @@ function History(props) {
                                 finalPrice: monthData[data].finalPrice,
                                 finalTax: monthData[data].finalTax,
                                 finalTotalPrice: monthData[data].finalTotalPrice
-                            }])
+                            });
+                        }
+                        else if (monthData[data].customerID == customer) {
+                            dataCount++;
+                            money += parseInt(monthData[data].finalTotalPrice, 10);
+                            rowDataFinal.push({
+                                accountNum: monthData[data].customerID,
+                                receipt: data,
+                                accountName: monthData[data].customerName,
+                                number: monthData[data].number,
+                                date: monthData[data].dateTime.substring(0, 9),
+                                memo1: monthData[data].memo1,
+                                memo2: monthData[data].memo2,
+                                detailDatas: monthData[data].detailDatas,
+                                finalPrice: monthData[data].finalPrice,
+                                finalTax: monthData[data].finalTax,
+                                finalTotalPrice: monthData[data].finalTotalPrice
+                            });
                         }
                     }
 
-                    againPostData(money, dataCount);
+                    againPostData(money, dataCount, rowDataFinal);
                 }
             }, {
                 onlyOnce: true
@@ -187,8 +234,7 @@ function History(props) {
     // 選完月份或客編
     function chooseDone() {
         if (startDate === undefined || startDate === null || startDate === '' ||
-            endDate === undefined || endDate === null || endDate === '' ||
-            customer === undefined || customer === null || customer === '') {
+            endDate === undefined || endDate === null || endDate === '') {
             toast.error('請輸入日期及客戶編號');
             return;
         }
@@ -270,7 +316,9 @@ function History(props) {
                         defaultColDef={defaultColDef}
                         rowDragManaged={true}
                         animateRows={true}
+                        pagination={true}
                         tooltipShowDelay={0}
+                        paginationPageSize={10}
                         onGridReady={sizeToFit}
                     ></AgGridReact>
                 </Row>
