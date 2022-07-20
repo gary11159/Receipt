@@ -115,7 +115,7 @@ const GridTable = (props) => {
             { field: 'price', headerName: '未稅單價' },
             {
                 field: 'priceTax', headerName: '含稅價格', editable: false,
-                valueGetter: 'data.price * 1.05',
+                valueGetter: '(data.price * 1.05).toFixed(2)',
             },
             { field: 'amount', headerName: '數量' }
         ]

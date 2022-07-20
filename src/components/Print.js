@@ -37,10 +37,10 @@ class ComponentToPrint extends React.Component {
             }
         }
         return (
-            <div style={{ fontSize: '20px', marginTop: 145 }} className="printFont">
+            <div style={{ fontSize: '20px', marginTop: 150 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                 </div>
-                <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450 }}>
+                <table className='print allCenter' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450, maxHeight: 500, minHeight: 500 }}>
                     <tbody>
                         <tr>
                             <td colSpan={3} >金三九貿易有限公司</td>
@@ -49,7 +49,7 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={3}>新北市新莊區五工路97巷6號3樓</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}  style={{ paddingRight: 5 }}>統編:29104790 電話:(02)2812-8989</td>
+                            <td colSpan={3} style={{ paddingRight: 5 }}>統編:29104790 電話:(02)2812-8989</td>
                         </tr>
                         <tr>
                             <td colSpan={1} style={{ textAlign: 'right' }}>日期</td>
@@ -57,8 +57,7 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.number : ''}</td>
                         </tr>
 
-                        {/* 兩個br */}
-                        {/* <tr><td>&nbsp;</td></tr> */}
+                        {/* 一個br */}
                         <tr><td>&nbsp;</td></tr>
 
                         <tr style={{ borderBottom: '2px solid' }}>
@@ -68,29 +67,24 @@ class ComponentToPrint extends React.Component {
                         </tr>
 
                         {data}
-                        <tr>
-                            <td></td>
-                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
-                                this.props.money.finalPrice
-                            }</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
-                                this.props.money.finalTax
-                            }</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
-                                this.props.money.finalTotalPrice
-                            }</td>
-                            <td></td>
-                        </tr>
                     </tbody>
                 </table>
+
+                <div className='allCenter'>
+                    <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
+                        this.props.money.finalPrice
+                    }</span>
+                </div>
+                <div className='allCenter'>
+                    <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
+                        this.props.money.finalTax
+                    }</span>
+                </div>
+                <div className='allCenter'>
+                    <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
+                        this.props.money.finalTotalPrice
+                    }</span>
+                </div>
             </div>
         )
     }
@@ -191,7 +185,7 @@ function Print(props) {
                     />
                 </div>
             </div>
-            <Row style={{ display: 'none' }}>
+            <Row style={{display: 'none'}}>
                 <Col>
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}
@@ -203,7 +197,7 @@ function Print(props) {
                 </Col>
             </Row>
             <ToastContainer autoClose={2000} />
-            
+
         </>
     )
 }
