@@ -71,8 +71,8 @@ function History(props) {
             let monthData = snapshot.val();
             if (monthData === undefined || monthData === null || monthData === '' || monthData.length === 0) {
                 if (rowDataFinal !== undefined && rowDataFinal !== null && rowDataFinal !== '' && rowDataFinal.length > 0) {
-                    console.log(rowDataFinal)
                     setRowData(rowDataFinal);
+                    setRowCount(rowDataFinal.length);
                     setMoney(money);
                     props.setLoadingStatus(false);
                     return;
@@ -84,8 +84,7 @@ function History(props) {
                 }
 
                 return;
-            } else {
-                setRowCount(pre => pre + Object.keys(monthData).length);
+            } else {                
                 for (let data in monthData) {
                     if (customer === undefined || customer === null || customer === '') {
                         dataCount++;
@@ -126,6 +125,8 @@ function History(props) {
                 if (dataCount === 0) {
                     setRowCount(0);
                     toast.error('查無資料');
+                } else {
+                    setRowCount(pre => dataCount);
                 }
                 setMoney(money);
                 props.setLoadingStatus(false);
@@ -259,7 +260,7 @@ function History(props) {
 
     // 回傳有common的金額
     function moditfyMoney(number) {
-        return new Intl.NumberFormat('en-IN').format(number);
+        return new Intl.NumberFormat('en-us').format(number);
     }
 
     // 查詢月份異動

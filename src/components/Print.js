@@ -22,15 +22,15 @@ class ComponentToPrint extends React.Component {
             this.props.rowData.rowData.map((dataMap, index) => {
                 data.push(
                     <tr key={index}>
-                        <td colSpan={1} style={{ textAlign: 'center' }}>{dataMap.item}</td>
-                        <td colSpan={1}>{dataMap.price}</td>
-                        <td colSpan={1} style={{ textAlign: 'center' }}>{dataMap.amount}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.item}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.price}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.amount}</td>
                     </tr>
                 );
             });
 
             // 補填空格
-            for (let i = 0; i < 10 - dataCount; i++) {
+            for (let i = 0; i < 9 - dataCount; i++) {
                 data.push(
                     <tr key={i + 100}><td>&nbsp;</td></tr>
                 );
@@ -40,16 +40,16 @@ class ComponentToPrint extends React.Component {
             <div style={{ fontSize: '20px', marginTop: 145 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                 </div>
-                <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '10px', width: 450 }}>
+                <table className='print' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450 }}>
                     <tbody>
                         <tr>
-                            <td colSpan={3} >金牛科技有限公司</td>
+                            <td colSpan={3} >金三九貿易有限公司</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}>新北市三重區溪尾街108巷34號</td>
+                            <td colSpan={3}>新北市新莊區五工路97巷6號3樓</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}>統編:16981021 電話:(02)-22868488</td>
+                            <td colSpan={3}  style={{ paddingRight: 5 }}>統編:29104790 電話:(02)2812-8989</td>
                         </tr>
                         <tr>
                             <td colSpan={1} style={{ textAlign: 'right' }}>日期</td>
@@ -58,33 +58,33 @@ class ComponentToPrint extends React.Component {
                         </tr>
 
                         {/* 兩個br */}
-                        <tr><td>&nbsp;</td></tr>
+                        {/* <tr><td>&nbsp;</td></tr> */}
                         <tr><td>&nbsp;</td></tr>
 
                         <tr style={{ borderBottom: '2px solid' }}>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>品名</td>
-                            <td colSpan={1}>未稅單價</td>
-                            <td colSpan={1} style={{ textAlign: 'center' }}>數量</td>
+                            <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>品名</td>
+                            <td colSpan={1} style={{ fontSize: 25 }}>未稅單價</td>
+                            <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>數量</td>
                         </tr>
 
                         {data}
                         <tr>
                             <td></td>
-                            <td colSpan={1}>{this.props.money == null ? '' :
+                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
                                 this.props.money.finalPrice
                             }</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colSpan={1}>{this.props.money == null ? '' :
+                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
                                 this.props.money.finalTax
                             }</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td></td>
-                            <td colSpan={1}>{this.props.money == null ? '' :
+                            <td colSpan={1} style={{ fontSize: 20 }}>{this.props.money == null ? '' :
                                 this.props.money.finalTotalPrice
                             }</td>
                             <td></td>

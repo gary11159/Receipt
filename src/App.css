@@ -39,13 +39,13 @@
 }
 
 table.print td {
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .printFont {
-  text-shadow: 1px 0 black;
+  font-weight: 500;
   letter-spacing: 1px;
-  font-weight: 900;
+  font-family: 微軟正黑體 !important;
 }
 
 table.print {
@@ -253,6 +253,10 @@ div.ag-row {
 }
 
 .modal-content {
-  background-color:transparent !important;
+  background-color: transparent !important;
   border: none !important;
+}
+
+body {
+  color: black !important;
 }
