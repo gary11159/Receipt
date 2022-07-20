@@ -233,38 +233,38 @@ const GridTable = (props) => {
         let i = 0, j = 0, k = 0;
         rowData.forEach((data) => {
             if (data.item == '') {
-                if( i === 0 ) {
+                if (i === 0) {
                     toast.error('請檢查是否有品項未選擇');
                     i++;
                 }
-                
+
                 boolean = false;
                 return;
             }
             if (data.price == 0) {
-                if( j === 0 ) {
+                if (j === 0) {
                     toast.error('請檢查是否有未稅單價為零');
                     j++;
                 }
-                
+
                 boolean = false;
                 return;
             }
             if (data.amount == 0) {
-                if( k === 0 ) {
+                if (k === 0) {
                     toast.error('請檢查是否有數量為零');
                     k++;
                 }
-                
+
                 boolean = false;
                 return;
             }
         });
 
-        if( !boolean ) {
+        if (!boolean) {
             return false;
         }
-        
+
         if (customerID === undefined || customerID === null || customerID === '') {
             toast.error('客戶編號尚未填寫');
             return false;
@@ -300,6 +300,7 @@ const GridTable = (props) => {
         if (checkSaveData(customerID, customerName, number)) {
             let rowDataNew = [];
             props.gridRef.current.api.forEachNode(node => rowDataNew.push(node.data));
+            props.onchangePrintData('rowData', rowDataNew);
             // 塞入資料庫內容
             let receiptPostData = {
                 [numberReceipt]: {
@@ -410,6 +411,15 @@ const GridTable = (props) => {
         setNumberReceipt(value);
     }
 
+    // Row拖曳結束
+    const onRowDragEnd = useCallback((e) => {
+
+        let rowData = [];
+        props.gridRef.current.api.forEachNode(node => rowData.push(node.data));
+        props.onchangePrintData('rowData', rowData);
+        setRowData(pre => rowData);
+    }, []);
+
     return (
         <>
             <Modal show={showCustomerModal} onHide={() => setShowCustomerModal(false)} size="lg">
@@ -444,11 +454,12 @@ const GridTable = (props) => {
                     stopEditingWhenCellsLoseFocus={true}
                     ref={props.gridRef}
                     rowData={rowData}
-                    defaultColDef={defaultColDef}
                     rowDragManaged={true}
+                    defaultColDef={defaultColDef}
                     animateRows={true}
                     rowSelection={'multiple'}
                     rowMultiSelectWithClick={true}
+                    onRowDragEnd={onRowDragEnd}
                     onCellValueChanged={(params) => onCellValueChanged(params)}
                 ></AgGridReact>
             </Row>
