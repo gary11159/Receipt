@@ -23,8 +23,8 @@ class ComponentToPrint extends React.Component {
                 data.push(
                     <tr key={index}>
                         <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.item}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.price}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.amount}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }}>{dataMap.price}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }}>{dataMap.amount}</td>
                     </tr>
                 );
             });

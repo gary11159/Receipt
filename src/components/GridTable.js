@@ -93,7 +93,10 @@ const GridTable = (props) => {
         columnDefs.forEach(function (colDef, index) {
             if (colDef.field === 'item') {
                 itemInfo.map((item) => {
-                    colDef.cellEditorParams.values.push(item.item);
+                    if (item != null && item != undefined && item != ''
+                        && item.item != null && item.item != undefined && item.item != '') {
+                        colDef.cellEditorParams.values.push(item.item);
+                    }
                 });
 
             }
