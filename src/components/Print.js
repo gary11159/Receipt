@@ -43,7 +43,7 @@ class ComponentToPrint extends React.Component {
                 <table className='print allCenter' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450, maxHeight: 500, minHeight: 500 }}>
                     <tbody>
                         <tr>
-                            <td colSpan={3} >金三九貿易有限公司</td>
+                            <td colSpan={3} >金三久貿易有限公司</td>
                         </tr>
                         <tr>
                             <td colSpan={3}>新北市新莊區五工路97巷6號3樓</td>
@@ -52,8 +52,7 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={3} style={{ paddingRight: 5 }}>統編:29104790 電話:(02)2812-8989</td>
                         </tr>
                         <tr>
-                            <td colSpan={1} style={{ textAlign: 'right' }}>日期</td>
-                            <td colSpan={1}>{this.props.rowData != null ? this.props.rowData.date : ''}</td>
+                            <td colSpan={2} style={{ textAlign: 'center' }}>日期：{this.props.rowData != null ? this.props.rowData.date : ''}</td>
                             <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.number : ''}</td>
                         </tr>
 

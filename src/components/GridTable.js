@@ -167,6 +167,7 @@ const GridTable = (props) => {
 
     // Table的cell有變動時
     function onCellValueChanged(params) {
+        let patrn = /^[0-9]*$/;
         if (params.colDef.field === 'item') {
             let changedData = [params.data];
             itemInfo.map((item) => {
@@ -182,6 +183,18 @@ const GridTable = (props) => {
             let rowDataNew = [];
             props.gridRef.current.api.forEachNode(node => rowDataNew.push(node.data));
             props.onchangePrintData('rowData', rowDataNew);
+        } else if (params.colDef.field === 'price' && isNaN(Number(params.data.price))) {
+            toast.error('僅接受數字');
+            props.gridRef.current.api.undoCellEditing();
+            return;
+        } else if (params.colDef.field === 'priceTax' && isNaN(Number(params.data.priceTax))) {
+            toast.error('僅接受數字');
+            props.gridRef.current.api.undoCellEditing();
+            return;
+        } else if (params.colDef.field === 'amount' && isNaN(Number(params.data.amount))) {
+            toast.error('僅接受數字');
+            props.gridRef.current.api.undoCellEditing();
+            return;
         }
 
         calculateMoney();
@@ -462,6 +475,8 @@ const GridTable = (props) => {
                     animateRows={true}
                     rowSelection={'multiple'}
                     rowMultiSelectWithClick={true}
+                    undoRedoCellEditing={true}
+                    undoRedoCellEditingLimit={5}
                     onRowDragEnd={onRowDragEnd}
                     onCellValueChanged={(params) => onCellValueChanged(params)}
                 ></AgGridReact>

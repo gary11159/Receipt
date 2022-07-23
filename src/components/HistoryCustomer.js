@@ -9,7 +9,7 @@ import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 
 function HistoryCustomer(props) {
 
-    const gridStyle = useMemo(() => ({ height: '600px', width: '750px'}), []);
+    const gridStyle = useMemo(() => ({ height: '600px', width: '750px' }), []);
     const gridRef = useRef();
     const [rowData, setRowData] = useState([]);
 
@@ -51,6 +51,12 @@ function HistoryCustomer(props) {
         });
     }, []);
 
+    const onFilterTextBoxChanged = useCallback(() => {
+        gridRef.current.api.setQuickFilter(
+            document.getElementById('filter-text-box').value
+        );
+    }, []);
+
     return (
         <>
             <Modal.Header>
@@ -58,6 +64,15 @@ function HistoryCustomer(props) {
             </Modal.Header>
             <Modal.Body>
                 <div className="ag-theme-alpine" style={gridStyle}>
+                    <div className='allCenter'>
+                        <input
+                            style={{ borderRadius: 10, marginBottom: 10 }}
+                            type="text"
+                            id="filter-text-box"
+                            placeholder="搜尋..."
+                            onInput={onFilterTextBoxChanged}
+                        />
+                    </div>
                     <AgGridReact
                         ref={gridRef}
                         rowData={rowData}
