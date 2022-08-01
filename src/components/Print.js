@@ -9,6 +9,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { db } from './firebase';
 import { onValue, ref, set, update } from 'firebase/database';
 
+
 class ComponentToPrint extends React.Component {
     constructor(props) {
         super(props);
@@ -46,10 +47,10 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={3} >金三久貿易有限公司</td>
                         </tr>
                         <tr>
-                            <td colSpan={3}>新北市新莊區五工路97巷6號3樓</td>
+                            <td colSpan={3}>新北市新店區中央七街89號3樓</td>
                         </tr>
                         <tr>
-                            <td colSpan={3} style={{ paddingRight: 5 }}>統編:29104790 電話:(02)2812-8989</td>
+                            <td colSpan={3} style={{ paddingRight: 5 }}>統編:90323620 電話:(02)2812-8989</td>
                         </tr>
                         <tr>
                             <td colSpan={2} style={{ textAlign: 'center' }}>日期：{this.props.rowData != null ? this.props.rowData.date : ''}</td>

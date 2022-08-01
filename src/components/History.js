@@ -7,6 +7,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
 import CustomTooltip from './Tooltips';
 import DatePicker from "react-datepicker";
+import Excel from './Excel';
 import Button from 'react-bootstrap/Button';
 import { toast } from 'react-toastify';
 import { off, onValue, ref, set, update, child } from 'firebase/database';
@@ -84,7 +85,7 @@ function History(props) {
                 }
 
                 return;
-            } else {                
+            } else {
                 for (let data in monthData) {
                     if (customer === undefined || customer === null || customer === '') {
                         dataCount++;
@@ -271,6 +272,21 @@ function History(props) {
         setEndDate(tempDate);
     }
 
+    // 產出檔案
+    const onBtnExport = useCallback(() => {
+        let rowData = [];
+        props.gridRef.current.api.forEachNode(node => rowData.push(node.data));
+        if (rowData.length === 0) {
+            toast.error('無資料供下載');
+            return;
+        }
+
+        var params = {
+            fileName: '資料匯出.csv'
+        };
+        props.gridRef.current.api.exportDataAsCsv(params);
+    }, []);
+
     return (
         <>
             <Container>
@@ -278,6 +294,7 @@ function History(props) {
                     <Col style={{ textAlign: 'left', display: 'flex' }}>
                         查詢月份：
                         <DatePicker
+                            id="startDate"
                             selected={startDate}
                             locale={locale}
                             dateFormat="yyyy-MM"
@@ -296,6 +313,7 @@ function History(props) {
                     </Col>
                     <Col style={{ textAlign: 'right' }}>
                         <Button variant="success" style={{ width: 150 }} onClick={() => chooseDone()}>查詢</Button>
+                        <Excel gridRef={props.gridRef} rowData={rowData}/>
                     </Col>
                 </Row>
                 <Row>

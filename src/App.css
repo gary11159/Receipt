@@ -260,3 +260,8 @@ div.ag-row {
 body {
   color: black !important;
 }
+
+button:disabled {
+  cursor: not-allowed;
+  pointer-events: all !important;
+}
