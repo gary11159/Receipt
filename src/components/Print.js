@@ -23,9 +23,9 @@ class ComponentToPrint extends React.Component {
             this.props.rowData.rowData.map((dataMap, index) => {
                 data.push(
                     <tr key={index}>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>{dataMap.item}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }}>{dataMap.price}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }}>{dataMap.amount}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }} className="ignore">{dataMap.item}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }} className="ignore">{dataMap.price}</td>
+                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }} className="ignore">{dataMap.amount}</td>
                     </tr>
                 );
             });
@@ -186,6 +186,7 @@ function Print(props) {
                 </div>
             </div>
             <Row style={{display: 'none'}}>
+            {/* <Row > */}
                 <Col>
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}

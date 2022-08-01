@@ -265,3 +265,10 @@ button:disabled {
   cursor: not-allowed;
   pointer-events: all !important;
 }
+
+.ignore {
+  max-width: 140px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

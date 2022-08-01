@@ -21,6 +21,9 @@ const GridTable = (props) => {
     let nowYear = new Date().getFullYear() - 1911;
     let nowMonth = new Date().getMonth() + 1;
     let nowDate = new Date().getDate();
+    if ( nowDate < 10 ) {
+        nowDate = '0' + nowDate;
+    }
     // 當前發票
     const [numberReceipt, setNumberReceipt] = React.useState();
 
