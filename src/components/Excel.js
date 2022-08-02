@@ -43,6 +43,10 @@ function Excel(props) {
                     <ExcelColumn label="日期" value="date" />
                     <ExcelColumn label="備註1" value="memo1" />
                     <ExcelColumn label="備註2" value="memo2" />
+                    <ExcelColumn label="賣方統一編號" value={() => "90323620"} />
+                    <ExcelColumn label="賣方名稱" value={() => "金三久貿易有限公司"}/>
+                    <ExcelColumn label="金額" value="finalPrice" />
+                    <ExcelColumn label="稅金" value="finalTax" />
                     <ExcelColumn label="總金額" value="finalTotalPrice" />
                 </ExcelSheet>
             </ExcelFile>

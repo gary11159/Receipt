@@ -22,26 +22,34 @@ class ComponentToPrint extends React.Component {
             let dataCount = this.props.rowData.rowData.length;
             this.props.rowData.rowData.map((dataMap, index) => {
                 data.push(
-                    <tr key={index}>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }} className="ignore">{dataMap.item}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }} className="ignore">{dataMap.price}</td>
-                        <td colSpan={1} style={{ textAlign: 'center', fontSize: 20 }} className="ignore">{dataMap.amount}</td>
-                    </tr>
+                    <div style={{ paddingLeft: 30, textAlign: 'left' }}>
+                        {dataMap.item}
+                    </div>
+                );
+                data.push(
+                    <Row style={{ padding: 0 }}>
+                        <Col style={{ textAlign: 'center' }}>
+                            單價:$ {dataMap.price}
+                        </Col>
+                        <Col style={{ textAlign: 'center' }}>
+                            數量: {dataMap.amount}
+                        </Col>
+                    </Row>
                 );
             });
 
             // 補填空格
-            for (let i = 0; i < 9 - dataCount; i++) {
-                data.push(
-                    <tr key={i + 100}><td>&nbsp;</td></tr>
-                );
-            }
+            // for (let i = 0; i < 9 - dataCount; i++) {
+            //     data.push(
+            //         <div>&nbsp;</div>
+            //     );
+            // }
         }
         return (
-            <div style={{ fontSize: '20px', marginTop: 150 }} className="printFont">
+            <div style={{ fontSize: '20px', marginTop: 100 }} className="printFont">
                 <div style={{ display: 'flex', justifyContent: 'start' }}>
                 </div>
-                <table className='print allCenter' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450, maxHeight: 500, minHeight: 500 }}>
+                <table className='print allCenter' border="0" cellSpacing="0" cellPadding="0" style={{ margin: '0 auto', marginTop: '8px', width: 450, maxHeight: 200, minHeight: 200 }}>
                     <tbody>
                         <tr>
                             <td colSpan={3} >金三久貿易有限公司</td>
@@ -58,18 +66,21 @@ class ComponentToPrint extends React.Component {
                         </tr>
 
                         {/* 一個br */}
-                        <tr><td>&nbsp;</td></tr>
+                        {/* <tr><td>&nbsp;</td></tr> */}
 
-                        <tr style={{ borderBottom: '2px solid' }}>
+                        {/* <tr style={{ borderBottom: '2px solid' }}>
                             <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>品名</td>
                             <td colSpan={1} style={{ fontSize: 25 }}>未稅單價</td>
                             <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>數量</td>
-                        </tr>
+                        </tr> */}
 
-                        {data}
+
                     </tbody>
                 </table>
 
+                <div style={{height: 320}}>
+                    {data}
+                </div>
                 <div className='allCenter'>
                     <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
                         this.props.money.finalPrice
@@ -185,8 +196,8 @@ function Print(props) {
                     />
                 </div>
             </div>
-            <Row style={{display: 'none'}}>
-            {/* <Row > */}
+            <Row style={{ display: 'none' }}>
+                {/* <Row > */}
                 <Col>
                     <ComponentToPrint
                         ref={el => (componentRef.current = el)}
