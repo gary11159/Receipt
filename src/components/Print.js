@@ -20,30 +20,29 @@ class ComponentToPrint extends React.Component {
 
         if (this.props.rowData !== null && this.props.rowData !== undefined && this.props.rowData !== '') {
             let dataCount = this.props.rowData.rowData.length;
+            let px = 0;
             this.props.rowData.rowData.map((dataMap, index) => {
+                if( px != 0 ) {
+                    px += 5;
+                }
                 data.push(
-                    <div style={{ paddingLeft: 30, textAlign: 'left' }}>
+                    <div style={{ paddingLeft: 30, textAlign: 'left', fontSize: 24, position: 'relative', bottom: px }}>
                         {dataMap.item}
                     </div>
                 );
+
+                px += 8;
                 data.push(
-                    <Row style={{ padding: 0 }}>
-                        <Col style={{ textAlign: 'center' }}>
-                            單價:$ {dataMap.price}
+                    <Row style={{ padding: 0, fontSize: 24, position: 'relative', bottom: px  }}>
+                        <Col style={{ textAlign: 'left', paddingLeft: 60, maxWidth: 237, whiteSpace: 'nowrap'}}>
+                            <span>單價:$ {dataMap.price}</span>
                         </Col>
-                        <Col style={{ textAlign: 'center' }}>
-                            數量: {dataMap.amount}
+                        <Col style={{ textAlign: 'left', paddingLeft: 30, maxWidth: 237, whiteSpace: 'nowrap' }}>
+                            <span>數量: {dataMap.amount}</span>
                         </Col>
                     </Row>
                 );
             });
-
-            // 補填空格
-            // for (let i = 0; i < 9 - dataCount; i++) {
-            //     data.push(
-            //         <div>&nbsp;</div>
-            //     );
-            // }
         }
         return (
             <div style={{ fontSize: '20px', marginTop: 100 }} className="printFont">
@@ -64,21 +63,10 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={2} style={{ textAlign: 'center' }}>日期：{this.props.rowData != null ? this.props.rowData.date : ''}</td>
                             <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.number : ''}</td>
                         </tr>
-
-                        {/* 一個br */}
-                        {/* <tr><td>&nbsp;</td></tr> */}
-
-                        {/* <tr style={{ borderBottom: '2px solid' }}>
-                            <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>品名</td>
-                            <td colSpan={1} style={{ fontSize: 25 }}>未稅單價</td>
-                            <td colSpan={1} style={{ textAlign: 'center', fontSize: 25 }}>數量</td>
-                        </tr> */}
-
-
                     </tbody>
                 </table>
 
-                <div style={{height: 320}}>
+                <div style={{height: 370}}>
                     {data}
                 </div>
                 <div className='allCenter'>
@@ -87,12 +75,12 @@ class ComponentToPrint extends React.Component {
                     }</span>
                 </div>
                 <div className='allCenter'>
-                    <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
+                    <span style={{ fontSize: 20, position: 'relative', bottom: 8 }}>{this.props.money == null ? '' :
                         this.props.money.finalTax
                     }</span>
                 </div>
                 <div className='allCenter'>
-                    <span style={{ fontSize: 20 }}>{this.props.money == null ? '' :
+                    <span style={{ fontSize: 20, position: 'relative', bottom: 16 }}>{this.props.money == null ? '' :
                         this.props.money.finalTotalPrice
                     }</span>
                 </div>
