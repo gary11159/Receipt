@@ -57,6 +57,11 @@ function HistoryCustomer(props) {
         );
     }, []);
 
+    function editData(e) {
+        props.setRowSelectData(e.data);
+        props.editModalControl(true);
+        props.modalControl(false);
+    }
     return (
         <>
             <Modal.Header>
@@ -84,6 +89,7 @@ function HistoryCustomer(props) {
                         tooltipShowDelay={0}
                         paginationPageSize={10}
                         onGridReady={sizeToFit}
+                        onRowDoubleClicked={(e) => editData(e)}
                     ></AgGridReact>
                 </div>
             </Modal.Body>

@@ -69,7 +69,6 @@ function History(props) {
         let dateTime = endDate.getFullYear() + '' + (endDate.getMonth() + 1);
         let startRef = ref(props.db, 'Receipt/' + dateTime);
         return onValue(startRef, (snapshot) => {
-            console.log(rowDataFinal)
             let monthData = snapshot.val();
             if (monthData === undefined || monthData === null || monthData === '' || monthData.length === 0) {
                 if (rowDataFinal !== undefined && rowDataFinal !== null && rowDataFinal !== '' && rowDataFinal.length > 0) {

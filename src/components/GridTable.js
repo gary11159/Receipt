@@ -12,6 +12,7 @@ import { off, onValue, ref, set, update } from 'firebase/database';
 import { setDefaultLocale } from 'react-datepicker';
 import Modal from 'react-bootstrap/Modal';
 import HistoryCustomer from './HistoryCustomer';
+import EditCustomer from './EditCustomer';
 
 const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '860px', marginLeft: '20%' }), []);
@@ -21,7 +22,7 @@ const GridTable = (props) => {
     let nowYear = new Date().getFullYear() - 1911;
     let nowMonth = new Date().getMonth() + 1;
     let nowDate = new Date().getDate();
-    if ( nowDate < 10 ) {
+    if (nowDate < 10) {
         nowDate = '0' + nowDate;
     }
     // 當前發票
@@ -32,6 +33,12 @@ const GridTable = (props) => {
         apiKey: process.env.REACT_APP_API_KEY,
         sheetId: process.env.REACT_APP_GOOGLE_SHEETS_ID,
     });
+
+    // 顯示已修改客戶的視窗
+    const [showCustomerEditModal, setShowCustomerEditModal] = useState(false);
+
+    // 選取修改資料
+    const [rowSelectData, setRowSelectData] = useState();
 
     // 品項放入state (Google Sheet)
     useEffect(() => {
@@ -441,11 +448,25 @@ const GridTable = (props) => {
 
     return (
         <>
+            {/* 客戶資料 */}
             <Modal show={showCustomerModal} onHide={() => setShowCustomerModal(false)} size="lg">
                 <HistoryCustomer
                     setLoadingStatus={(status) => props.setLoadingStatus(status)}
                     db={props.db}
                     modalControl={(bool) => setShowCustomerModal(bool)}
+                    editModalControl={(bool) => setShowCustomerEditModal(bool)}
+                    setRowSelectData={(data) => setRowSelectData(data)}
+                />
+            </Modal>
+
+            {/* 修改客戶資料 */}
+            <Modal show={showCustomerEditModal} onHide={() => setShowCustomerEditModal(false)} size="lg">
+                <EditCustomer
+                    setLoadingStatus={(status) => props.setLoadingStatus(status)}
+                    modalControl={(bool) => setShowCustomerModal(bool)}
+                    editModalControl={(bool) => setShowCustomerEditModal(bool)}
+                    rowSelectData={rowSelectData}
+                    db={props.db}
                 />
             </Modal>
 
