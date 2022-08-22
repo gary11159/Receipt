@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './css/tab.css';
 import 'react-toastify/dist/ReactToastify.css';
 import "react-datepicker/dist/react-datepicker.css";
+import 'react-confirm-alert/src/react-confirm-alert.css'; // Import css
 import Logo_EX from './public/logo_EX.png';
 import Logo_COW from './public/logo_Cow.png';
 import React from 'react';

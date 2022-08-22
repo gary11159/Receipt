@@ -225,7 +225,7 @@ const GridTable = (props) => {
         });
 
         document.getElementById("finalPrice").textContent = withoutTax.toFixed(2);
-        document.getElementById("finalTax").textContent = priceTax.toFixed(2);
+        document.getElementById("finalTax").textContent = priceTax.toFixed(0);
         document.getElementById("finalTotalPrice").textContent = totalPrice.toFixed(0);
 
         props.onchangePrintData('money', {

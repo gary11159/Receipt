@@ -272,3 +272,7 @@ button:disabled {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
+
+.react-confirm-alert-overlay {
+  z-index: 1500 !important;
+}
