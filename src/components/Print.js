@@ -17,12 +17,13 @@ class ComponentToPrint extends React.Component {
 
     render() {
         let data = [];
+        let dateTime = "";
 
         if (this.props.rowData !== null && this.props.rowData !== undefined && this.props.rowData !== '') {
             let dataCount = this.props.rowData.rowData.length;
             let px = 0;
             this.props.rowData.rowData.map((dataMap, index) => {
-                if( px != 0 ) {
+                if (px != 0) {
                     px += 5;
                 }
                 data.push(
@@ -33,8 +34,8 @@ class ComponentToPrint extends React.Component {
 
                 px += 8;
                 data.push(
-                    <Row style={{ padding: 0, fontSize: 24, position: 'relative', bottom: px  }}>
-                        <Col style={{ textAlign: 'left', paddingLeft: 60, maxWidth: 237, whiteSpace: 'nowrap'}}>
+                    <Row style={{ padding: 0, fontSize: 24, position: 'relative', bottom: px }}>
+                        <Col style={{ textAlign: 'left', paddingLeft: 60, maxWidth: 237, whiteSpace: 'nowrap' }}>
                             <span>單價:$ {dataMap.price}</span>
                         </Col>
                         <Col style={{ textAlign: 'left', paddingLeft: 30, maxWidth: 237, whiteSpace: 'nowrap' }}>
@@ -43,6 +44,12 @@ class ComponentToPrint extends React.Component {
                     </Row>
                 );
             });
+
+            // 處理西元年轉民國
+            dateTime = new Date(this.props.rowData.date);
+            dateTime = (dateTime.getFullYear() - 1911) + '.' +
+                ((dateTime.getMonth() + 1) < 10 ? '0' + (dateTime.getMonth() + 1) : (dateTime.getMonth() + 1)) + '.' + 
+                ((dateTime.getDate()) < 10 ? '0' + dateTime.getDate() : dateTime.getDate());
         }
         return (
             <div style={{ fontSize: '20px', marginTop: 100 }} className="printFont">
@@ -60,13 +67,13 @@ class ComponentToPrint extends React.Component {
                             <td colSpan={3} style={{ paddingRight: 5 }}>統編:90323620 電話:(02)2812-8989</td>
                         </tr>
                         <tr>
-                            <td colSpan={2} style={{ textAlign: 'center' }}>日期：{this.props.rowData != null ? this.props.rowData.date : ''}</td>
+                            <td colSpan={2} style={{ textAlign: 'center' }}>日期：{dateTime}</td>
                             <td colSpan={1} style={{ textAlign: 'left' }}>{this.props.customerData != null ? this.props.customerData.number : ''}</td>
                         </tr>
                     </tbody>
                 </table>
 
-                <div style={{height: 370}}>
+                <div style={{ height: 370 }}>
                     {data}
                 </div>
                 <div className='allCenter'>

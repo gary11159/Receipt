@@ -13,9 +13,11 @@ import { setDefaultLocale } from 'react-datepicker';
 import Modal from 'react-bootstrap/Modal';
 import HistoryCustomer from './HistoryCustomer';
 import EditCustomer from './EditCustomer';
+import DatePicker from "react-datepicker";
 
 const GridTable = (props) => {
     const gridStyle = useMemo(() => ({ height: '500px', width: '860px', marginLeft: '20%' }), []);
+    const [dateTime, setDatetime] = React.useState(new Date());
     const [itemInfo, setItemInfo] = useState();
     // 顯示已儲存的客戶視窗
     const [showCustomerModal, setShowCustomerModal] = useState(false);
@@ -24,6 +26,18 @@ const GridTable = (props) => {
     let nowDate = new Date().getDate();
     if (nowDate < 10) {
         nowDate = '0' + nowDate;
+    }
+
+    const months = ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+    const days = ['一', '二', '三', '四', '五', '六', '日']
+    const locale = {
+        localize: {
+            day: n => days[n],
+            month: n => months[n]
+        },
+        formatLong: {
+            date: () => 'mm/dd/yyyy'
+        }
     }
     // 當前發票
     const [numberReceipt, setNumberReceipt] = React.useState();
@@ -322,6 +336,13 @@ const GridTable = (props) => {
 
         let memo1 = document.getElementById("memo1").value;
         let memo2 = document.getElementById("memo2").value;
+
+        let dateTimeDocument = document.getElementById("date").value;
+        let dateTime = new Date(dateTimeDocument);
+        // 處理西元年轉民國
+        dateTime = (dateTime.getFullYear() - 1911) + '.' +
+            ((dateTime.getMonth() + 1) < 10 ? '0' + (dateTime.getMonth() + 1) : (dateTime.getMonth() + 1)) + '.' + 
+            ((dateTime.getDate()) < 10 ? '0' + dateTime.getDate() : dateTime.getDate());
         // true代表檢驗成功
         if (checkSaveData(customerID, customerName, number)) {
             let rowDataNew = [];
@@ -333,13 +354,14 @@ const GridTable = (props) => {
                     customerID: customerID,
                     customerName: customerName,
                     number: number,
-                    dateTime: getNowDate(),
+                    dateTime: dateTime,
                     detailDatas: rowDataNew,
                     finalPrice: finalPrice,
                     finalTax: finalTax,
                     finalTotalPrice: finalTotalPrice,
                     memo1: memo1,
-                    memo2: memo2
+                    memo2: memo2,
+                    updateTime: getNowDate()
                 }
             };
 
@@ -351,7 +373,7 @@ const GridTable = (props) => {
             }
 
             // 更新發票
-            update(ref(props.db, 'Receipt/' + new Date().getFullYear() + '' + (parseInt(new Date().getMonth()) + 1) + '/'), receiptPostData).then(() => {
+            update(ref(props.db, 'Receipt/' + new Date(dateTimeDocument).getFullYear() + '' + (parseInt(new Date(dateTimeDocument).getMonth()) + 1) + '/'), receiptPostData).then(() => {
                 console.log("更新發票明細成功");
                 // 更新客戶
                 update(ref(props.db, 'ACCOUNT/'), accountPostData).then(() => {
@@ -473,8 +495,16 @@ const GridTable = (props) => {
             <Row>
                 <Col>
                     日期：
-                    <input type="text" id="date" name="date" readOnly style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25, marginRight: 20 }}
-                        defaultValue={getNowDate().substring(0, 9)}></input>
+                    {/* <input type="text" id="date" name="date" style={{ borderRadius: 10, width: '10%', marginRight: 10, fontSize: 25, marginRight: 20 }}
+                        defaultValue={getNowDate().substring(0, 9)}></input> */}
+                    <DatePicker
+                        id="date"
+                        selected={dateTime}
+                        locale={locale}
+                        dateFormat="yyyy.MM.dd"
+                        onChange={(date) => setDatetime(date)}
+                        style={{display: 'none'}}
+                    />
                     發票號碼：
                     <input type="text" id="receiptNumber" name="receiptNumber" style={{ borderRadius: 10, width: '12%', fontSize: 25 }} value={numberReceipt === undefined ? '' : numberReceipt} onChange={(e) => userChangeReceipt(e)}></input>
                     <Button variant="primary" onClick={() => addItem()} style={{ marginLeft: 20 }}>新增品項</Button>

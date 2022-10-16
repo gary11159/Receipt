@@ -276,3 +276,11 @@ button:disabled {
 .react-confirm-alert-overlay {
   z-index: 1500 !important;
 }
+
+.react-datepicker__tab-loop {
+  display: inline-block;
+}
+
+#date {
+  font-size: 24px;
+}
