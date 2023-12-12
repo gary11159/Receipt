@@ -1,0 +1,4 @@
+fs 到node_modules中的react-export-excel和xlsx的package.json 加上
+browser: {
+ fs: false
+}
